@@ -1,66 +1,90 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { use, useState } from "react";
+import { checkUrlISExist } from "../utils/mockServer";
+import { useRef } from "react";
+
 
 export default function Home() {
+  const [url, setUrl] = useState("");
+  const [isValid, setIsValid] = useState(null);
+  const [serverResult, setServerResult] = useState("");
+  const timer = useRef(null);
+
+  function checkUrl(val) {
+    try {
+      const correctUrl = new URL(val);
+      return correctUrl.protocol === "http:" || correctUrl.protocol === "https:";
+    } catch (err) {
+      return false;
+    }
+  }
+  async function doCheck(url) {
+    setServerResult("checking");
+    const result = await checkUrlISExist(url);
+    setServerResult(result);
+  }
+
+  function handleChange(e) {
+    const val = e.target.value;
+    setUrl(val);
+    const isUrlValiad = checkUrl(val);
+    setIsValid(isUrlValiad);
+    if (isUrlValiad) {
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => doCheck(val), 800);
+    } else {
+      setServerResult("");
+      clearTimeout(timer.current);
+    }
+
+  }
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <div
+        style={{
+          height: "100vh",
+          background: "#fff",
+          color: "#000",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
+        <input
+          type="text"
+          value={url}
+          onChange={handleChange}
+          placeholder="https://example.com"
+          style={{
+            width: "420px",
+            padding: "14px 16px",
+            borderRadius: "10px",
+            border: "1px solid #555",
+            fontSize: "16px",
+            outline: "none",
+          }}
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+        {isValid === true && <p style={{ color: "green", margin: 0 }}>Format looks good</p>}
+        {isValid === false && <p style={{ color: "red", margin: 0 }}>Not a valid URL</p>}
+        {serverResult === "checking" && <p style={{ margin: 0 }}>Checking...</p>}
+
+        {serverResult && serverResult !== "checking" && serverResult.exists && (
+          <p style={{ color: "green", margin: 0 }}>
+            URL exists - {serverResult.type === "file" ? "File" : "Folder"}
           </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        )}
+
+        {serverResult && serverResult !== "checking" && serverResult.exists === false && (
+          <p style={{ color: "red", margin: 0 }}>URL does not exist</p>
+        )}
+      </div>
+    </>
+
+
   );
-}
+} 
