@@ -69,8 +69,26 @@ export default function Home() {
           }}
         />
 
-        {isValid === true && <p style={{ color: "green", margin: 0 }}>Format looks good</p>}
-        {isValid === false && <p style={{ color: "red", margin: 0 }}>Not a valid URL</p>}
+         <div
+        style={{
+          width: "420px",
+          minHeight: "52px", 
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems:"center",
+          textAlign: "center",
+          gap: "6px",
+        }}
+      >
+        {isValid === true && (
+          <p style={{ color: "green", margin: 0 }}>Format looks good</p>
+        )}
+
+        {isValid === false && (
+          <p style={{ color: "red", margin: 0 }}>Not a valid URL</p>
+        )}
+
         {serverResult === "checking" && <p style={{ margin: 0 }}>Checking...</p>}
 
         {serverResult && serverResult !== "checking" && serverResult.exists && (
@@ -83,6 +101,7 @@ export default function Home() {
           <p style={{ color: "red", margin: 0 }}>URL does not exist</p>
         )}
       </div>
+    </div>
     </>
 
 
