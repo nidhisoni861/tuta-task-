@@ -25,8 +25,9 @@ export default function Home() {
   }
 
   function handleChange(e) {
-    const val = e.target.value;
-    setUrl(val);
+    const value = e.target.value;
+    setUrl(value);
+    const val = value.trim();
 
     if(val.trim() === "") {
       setIsValid(null);
