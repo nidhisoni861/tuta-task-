@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { useState } from "react";
 import { checkUrlISExist } from "../utils/mockServer";
 import { useRef } from "react";
 
@@ -20,7 +20,6 @@ export default function Home() {
     }
   }
   async function doCheck(url) {
-    setServerResult("checking");
     const result = await checkUrlISExist(url);
     setServerResult(result);
   }
@@ -28,10 +27,18 @@ export default function Home() {
   function handleChange(e) {
     const val = e.target.value;
     setUrl(val);
+
+    if(val.trim() === "") {
+      setIsValid(null);
+      setServerResult("");
+      clearTimeout(timer.current);
+      return;
+    }
     const isUrlValiad = checkUrl(val);
     setIsValid(isUrlValiad);
+    clearTimeout(timer.current);
     if (isUrlValiad) {
-      clearTimeout(timer.current);
+      setServerResult("checking");
       timer.current = setTimeout(() => doCheck(val), 800);
     } else {
       setServerResult("");
