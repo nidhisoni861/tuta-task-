@@ -20,9 +20,9 @@ export default function Home() {
       return false;
     }
   }
-  async function doCheck(url , uniqId) {
+  async function doCheck(url, uniqId) {
     const result = await checkUrlISExist(url);
-    if(uniqId !== uniqueIdRef.current) return;
+    if (uniqId !== uniqueIdRef.current) return;
     setServerResult(result);
   }
 
@@ -31,9 +31,9 @@ export default function Home() {
     setUrl(value);
     const val = value.trim();
 
-    if(val.trim() === "") {
+    if (val.trim() === "") {
       uniqueIdRef.current += 1;
-       setIsValid(null);
+      setIsValid(null);
       setServerResult("");
       clearTimeout(timer.current);
       return;
@@ -43,11 +43,11 @@ export default function Home() {
     clearTimeout(timer.current);
     if (isUrlValiad) {
       setServerResult("checking");
-       uniqueIdRef.current += 1;
-        const uniqId = uniqueIdRef.current;
+      uniqueIdRef.current += 1;
+      const uniqId = uniqueIdRef.current;
       timer.current = setTimeout(() => doCheck(val, uniqId), 800);
     } else {
-      uniqueIdRef.current += 1; 
+      uniqueIdRef.current += 1;
       setServerResult("");
       clearTimeout(timer.current);
     }
@@ -83,39 +83,39 @@ export default function Home() {
           }}
         />
 
-         <div
-        style={{
-          width: "420px",
-          minHeight: "52px", 
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems:"center",
-          textAlign: "center",
-          gap: "6px",
-        }}
-      >
-        {isValid === true && (
-          <p style={{ color: "green", margin: 0 }}>Format looks good</p>
-        )}
+        <div
+          style={{
+            width: "420px",
+            minHeight: "52px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            textAlign: "center",
+            gap: "6px",
+          }}
+        >
+          {isValid === true && (
+            <p style={{ color: "green", margin: 0 }}>Format looks good</p>
+          )}
 
-        {isValid === false && (
-          <p style={{ color: "red", margin: 0 }}>Not a valid URL</p>
-        )}
+          {isValid === false && (
+            <p style={{ color: "red", margin: 0 }}>Not a valid URL</p>
+          )}
 
-        {serverResult === "checking" && <p style={{ margin: 0 }}>Checking...</p>}
+          {serverResult === "checking" && <p style={{ margin: 0 }}>Checking...</p>}
 
-        {serverResult && serverResult !== "checking" && serverResult.exists && (
-          <p style={{ color: "green", margin: 0 }}>
-            URL exists - {serverResult.type === "file" ? "File" : "Folder"}
-          </p>
-        )}
+          {serverResult && serverResult !== "checking" && serverResult.exists && (
+            <p style={{ color: "green", margin: 0 }}>
+              URL exists - {serverResult.type === "file" ? "File" : "Folder"}
+            </p>
+          )}
 
-        {serverResult && serverResult !== "checking" && serverResult.exists === false && (
-          <p style={{ color: "red", margin: 0 }}>URL does not exist</p>
-        )}
+          {serverResult && serverResult !== "checking" && serverResult.exists === false && (
+            <p style={{ color: "red", margin: 0 }}>URL does not exist</p>
+          )}
+        </div>
       </div>
-    </div>
     </>
 
 
