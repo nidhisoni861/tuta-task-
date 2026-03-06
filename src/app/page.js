@@ -10,6 +10,7 @@ export default function Home() {
   const [isValid, setIsValid] = useState(null);
   const [serverResult, setServerResult] = useState("");
   const timer = useRef(null);
+  const uniqueIdRef = useRef(0);
 
   function checkUrl(val) {
     try {
@@ -19,8 +20,9 @@ export default function Home() {
       return false;
     }
   }
-  async function doCheck(url) {
+  async function doCheck(url , uniqId) {
     const result = await checkUrlISExist(url);
+    if(uniqId !== uniqueIdRef.current) return;
     setServerResult(result);
   }
 
@@ -30,7 +32,8 @@ export default function Home() {
     const val = value.trim();
 
     if(val.trim() === "") {
-      setIsValid(null);
+      uniqueIdRef.current += 1;
+       setIsValid(null);
       setServerResult("");
       clearTimeout(timer.current);
       return;
@@ -40,8 +43,11 @@ export default function Home() {
     clearTimeout(timer.current);
     if (isUrlValiad) {
       setServerResult("checking");
-      timer.current = setTimeout(() => doCheck(val), 800);
+       uniqueIdRef.current += 1;
+        const uniqId = uniqueIdRef.current;
+      timer.current = setTimeout(() => doCheck(val, uniqId), 800);
     } else {
+      uniqueIdRef.current += 1; 
       setServerResult("");
       clearTimeout(timer.current);
     }
